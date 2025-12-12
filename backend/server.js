@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from 'path';
 import authRoutes from "./routes/auth.routes.js";
 import customerRoutes from './routes/customer.routes.js';
 import bookingRoutes from './routes/booking.routes.js';
@@ -9,7 +10,9 @@ const PORT = 5000;
 
 app.use(cors({
     origin: 'https://laundry-management-system-32ft.onrender.com', 
-    credentials: true
+    credentials: true, 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 
@@ -37,6 +40,19 @@ app.use("/api/bookings", bookingRoutes);
 // app.use((req, res) => {
 //     res.status(404).json({ message: 'Route not found' });
 // });
+
+/*
+** configuration for production
+*/
+const __dirname = path.resolve();
+
+if (process.env?.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
+    app.get(/.*/, (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'));
+    });
+}
+/** end of production configuration **/
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
