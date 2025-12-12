@@ -22,7 +22,7 @@ export default function BookingForm({ onClose, user }) {
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
-                const response = await fetch("https://laundry-management-system-32ft.onrender.com/auth/users");
+                const response = await fetch("https://laundry-management-system-32ft.onrender.com/api/auth/users");
                 const data = await response.json();
                 // Filter only customers
                 const customerUsers = data.users?.filter(u => u.role === "customer") || [];
