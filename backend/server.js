@@ -34,9 +34,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/customer/record", customerRoutes);
 app.use("/api/bookings", bookingRoutes);
 
-app.use((req, res) => {
-    res.status(404).json({ message: 'Route not found' });
-});
+// app.use((req, res) => {
+//     res.status(404).json({ message: 'Route not found' });
+// });
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
