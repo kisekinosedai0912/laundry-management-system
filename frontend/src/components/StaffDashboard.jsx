@@ -1,18 +1,46 @@
-import { useState, useEffect } from "react"
-import { getBookings } from "@/utils/storage"
-import OrderManagement from "./OrderManagement"
-import ReportViewer from "./ReportViewer"
+import { useState, useEffect } from "react";
+import { getBookings } from "@/utils/storage";
+import OrderManagement from "./OrderManagement";
+import ReportViewer from "./ReportViewer";
 
 export default function StaffDashboard() {
-    const [activeTab, setActiveTab] = useState("orders")
-    const [bookings, setBookings] = useState([])
+    const [activeTab, setActiveTab] = useState("orders");
+    const [bookings, setBookings] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setBookings(getBookings())
-    }, [])
+        loadBookings();
+    }, []);
 
-    const refreshBookings = () => {
-        setBookings(getBookings())
+    const loadBookings = async () => {
+        setLoading(true);
+        try {
+            const data = await getBookings(); // Now properly awaited
+            setBookings(data);
+        } catch (error) {
+            console.error("Error loading bookings:", error);
+            setBookings([]); // Set empty array on error
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const refreshBookings = async () => {
+        await loadBookings(); // Refresh by reloading
+    };
+
+    if (loading) {
+        return (
+            <div className="space-y-6">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Staff Dashboard</h1>
+                <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
+                    <div className="text-center py-12">
+                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <p className="mt-2 text-gray-600 dark:text-gray-400">Loading bookings...</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -24,8 +52,8 @@ export default function StaffDashboard() {
                     onClick={() => setActiveTab("orders")}
                     className={`px-6 py-3 font-semibold transition-all duration-200 ${
                         activeTab === "orders"
-                        ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                            ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600"
+                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                     }`}
                 >
                     Order Management
@@ -34,8 +62,8 @@ export default function StaffDashboard() {
                     onClick={() => setActiveTab("reports")}
                     className={`px-6 py-3 font-semibold transition-all duration-200 ${
                         activeTab === "reports"
-                        ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600"
-                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
+                            ? "text-blue-600 dark:text-blue-400 border-b-2 border-blue-600"
+                            : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200"
                     }`}
                 >
                     Reports
@@ -50,5 +78,5 @@ export default function StaffDashboard() {
                 )}
             </div>
         </div>
-    )
+    );
 }

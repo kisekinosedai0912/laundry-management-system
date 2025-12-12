@@ -1,0 +1,25 @@
+{
+  "name": "Laundry Management System",
+  "version": "1.0.0",
+  "description": "",
+  "main": "backend/server.js",
+  "scripts": {
+    "backend": "nodemon backend/server.js",
+    "frontend": "cd frontend && pnpm run dev",
+    "dev": "concurrently \"pnpm run backend\" \"pnpm run frontend\""
+  },
+  "keywords": [],
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.24.0",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.11"
+  }
+}

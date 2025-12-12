@@ -1,4 +1,4 @@
-import { getStatusColor, formatDate } from "@/utils/utils"
+import { getStatusColor, formatDate } from "@/utils/utils";
 
 export default function BookingList({ bookings }) {
     return (
@@ -11,15 +11,15 @@ export default function BookingList({ bookings }) {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                         <div>
                             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Name</p>
-                            <p className="text-lg font-semibold text-gray-900 dark:text-white">{booking.name}</p>
+                            <p className="text-lg font-semibold text-gray-900 dark:text-white">{booking.customerName}</p>  {/* Changed: Use 'customerName' */}
                         </div>
                         <div>
                             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Contact</p>
                             <p className="text-lg font-semibold text-gray-900 dark:text-white">{booking.contactNumber}</p>
                         </div>
                         <div>
-                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Fee</p>
-                            <p className="text-lg font-semibold text-gray-900 dark:text-white">₱{booking.fee.toFixed(2)}</p>
+                            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Price</p>  {/* Changed: Label to 'Price' */}
+                            <p className="text-lg font-semibold text-gray-900 dark:text-white">₱{booking.price.toFixed(2)}</p>  {/* Changed: Use 'price' */}
                         </div>
                         <div>
                             <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Status</p>
@@ -32,7 +32,7 @@ export default function BookingList({ bookings }) {
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <p>Weight: {booking.weight} kg</p>
-                        <p>Service: {booking.serviceType}</p>
+                        <p>Service: {booking.service}</p>  
                         <p>Location: {booking.location}</p>
                         <p>Payment: {booking.paymentMethod}</p>
                         <p>Created: {formatDate(booking.createdAt)}</p>
@@ -40,5 +40,5 @@ export default function BookingList({ bookings }) {
                 </div>
             ))}
         </div>
-    )
+    );
 }

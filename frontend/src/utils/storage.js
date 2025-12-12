@@ -1,48 +1,75 @@
-const STORAGE_KEY = "laundry_bookings"
-const ENCRYPTION_KEY = "laundry-secure-2024"
+const API_BASE_URL = "http://localhost:5000/api";
 
-function encrypt(data) {
-    return btoa(JSON.stringify(data))
+export async function initializeStorage() {
+    return true;
 }
 
-function decrypt(encrypted) {
+export async function getBookings() {
     try {
-        return JSON.parse(atob(encrypted))
-    } catch {
-        return null
+        const response = await fetch(`${API_BASE_URL}/bookings`);
+        const data = await response.json();
+        return data.bookings || [];
+    } catch (error) {
+        console.error("Error fetching bookings:", error);
+        return [];
     }
 }
 
-export function initializeStorage() {
-    if (!localStorage.getItem(STORAGE_KEY)) {
-        localStorage.setItem(STORAGE_KEY, encrypt([]))
+export async function addBooking(booking) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/bookings`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(booking),
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error adding booking:", error);
+        throw error;
     }
 }
 
-export function getBookings() {
-    initializeStorage()
-    const encrypted = localStorage.getItem(STORAGE_KEY)
-    const bookings = decrypt(encrypted)
-    return bookings || []
-}
-
-export function addBooking(booking) {
-    const bookings = getBookings()
-    bookings.push(booking)
-    localStorage.setItem(STORAGE_KEY, encrypt(bookings))
-}
-
-export function updateBookingStatus(bookingId, newStatus) {
-    const bookings = getBookings()
-    const booking = bookings.find((b) => b.id === bookingId)
-    if (booking) {
-        booking.status = newStatus
-        localStorage.setItem(STORAGE_KEY, encrypt(bookings))
+export async function updateBookingStatus(bookingId, newStatus) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}/status`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: newStatus }),
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error updating booking status:", error);
+        throw error;
     }
 }
 
-export function deleteBooking(bookingId) {
-    const bookings = getBookings()
-    const filtered = bookings.filter((b) => b.id !== bookingId)
-    localStorage.setItem(STORAGE_KEY, encrypt(filtered))
+export async function deleteBooking(bookingId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
+            method: "DELETE",
+        });
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error deleting booking:", error);
+        throw error;
+    }
+}
+
+// Get bookings for a specific customer
+export async function getCustomerBookings(customerId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/customer/record/${customerId}`);
+        const data = await response.json();
+        return data.bookings || [];
+    } catch (error) {
+        console.error("Error fetching customer bookings:", error);
+        return [];
+    }
 }

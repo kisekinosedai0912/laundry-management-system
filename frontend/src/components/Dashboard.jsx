@@ -1,23 +1,46 @@
-import { useState, useEffect } from "react"
-import { getBookings } from "@/utils/storage"
-import BookingList from "./BookingList"
+import { useState, useEffect } from "react";
+import { getBookings } from "@/utils/storage";  // Now async
+import BookingList from "./BookingList";
 
 export default function Dashboard({ onCreateBooking }) {
-    const [bookings, setBookings] = useState([])
-    const [stats, setStats] = useState({ total: 0, pending: 0, completed: 0, revenue: 0 })
+    const [bookings, setBookings] = useState([]);
+    const [stats, setStats] = useState({ total: 0, pending: 0, completed: 0, revenue: 0 });
+    const [loading, setLoading] = useState(true);  // New: Loading state
+    const [error, setError] = useState(null);     // New: Error state
 
     useEffect(() => {
-        const allBookings = getBookings()
-        setBookings(allBookings)
+        const fetchBookings = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const allBookings = await getBookings();  // Now awaited
+                setBookings(allBookings);
 
-        const statsData = {
-            total: allBookings.length,
-            pending: allBookings.filter((b) => b.status === "Pending").length,
-            completed: allBookings.filter((b) => b.status === "Completed").length,
-            revenue: allBookings.reduce((sum, b) => sum + (b.fee || 0), 0),
-        }
-        setStats(statsData)
-    }, [])
+                const statsData = {
+                    total: allBookings.length,
+                    pending: allBookings.filter((b) => b.status === "Pending").length,
+                    completed: allBookings.filter((b) => b.status === "Completed").length,
+                    revenue: allBookings.reduce((sum, b) => sum + (b.price || 0), 0),  // Changed: Use 'price' instead of 'fee'
+                };
+                setStats(statsData);
+            } catch (err) {
+                console.error("Error fetching bookings:", err);
+                setError("Failed to load bookings. Please try again.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBookings();
+    }, []);  // Add dependencies if you want to re-fetch (e.g., after onCreateBooking)
+
+    if (loading) {
+        return <div className="text-center py-12">Loading bookings...</div>;  // Simple loading UI
+    }
+
+    if (error) {
+        return <div className="text-center py-12 text-red-500">{error}</div>;  // Simple error UI
+    }
 
     return (
         <div className="space-y-8">
@@ -39,16 +62,15 @@ export default function Dashboard({ onCreateBooking }) {
                     </button>
                 </div>
                 {bookings.length === 0 ? (
-                        <div className="text-center py-12">
-                            <p className="text-gray-500 dark:text-gray-400 text-lg">No bookings yet. Create one to get started!</p>
-                        </div>
-                    ) : (
-                        <BookingList bookings={bookings} />
-                    )
-                }
+                    <div className="text-center py-12">
+                        <p className="text-gray-500 dark:text-gray-400 text-lg">No bookings yet. Create one to get started!</p>
+                    </div>
+                ) : (
+                    <BookingList bookings={bookings} />
+                )}
             </div>
         </div>
-    )
+    );
 }
 
 function StatCard({ title, value, color }) {
@@ -57,12 +79,12 @@ function StatCard({ title, value, color }) {
         yellow: "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800",
         green: "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800",
         indigo: "bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800",
-    }
+    };
 
     return (
         <div className={`${colorClasses[color]} border rounded-lg p-6`}>
             <p className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">{title}</p>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">{value}</p>
         </div>
-    )
+    );
 }

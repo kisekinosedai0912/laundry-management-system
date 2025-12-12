@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "id": "u_1765462266351",
+      "name": "Claire Encabo",
+      "email": "claire@gmail.com",
+      "role": "customer",
+      "password": "$2b$10$Rj5ZTAYECAHTFsy1QdkEPObTVoYrJ5fQvuz29Nhoiz9czunLNmGo6",
+      "createdAt": "2025-12-11T14:11:06.351Z"
+    },
+    {
+      "id": "u_1765464878094",
+      "name": "Administrator",
+      "email": "admin@email.com",
+      "role": "admin",
+      "password": "$2b$10$WR/kxH16d.C1EpnwS.XkFuf6jkthe7KJy/ZBkluSsP5mlqXEOeTjy",
+      "createdAt": "2025-12-11T14:54:38.094Z"
+    }
+  ]
+}
