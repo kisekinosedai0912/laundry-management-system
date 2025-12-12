@@ -5,14 +5,26 @@ import customerRoutes from './routes/customer.routes.js';
 import bookingRoutes from './routes/booking.routes.js';
 
 const app = express();
+const PORT = 5000;
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://laundry-management-system-32ft.onrender.com', 
+    credentials: true
+}));
 app.use(express.json());
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK', message: 'Server is running' });
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/customer/record", customerRoutes);
 app.use("/api/bookings", bookingRoutes);
 
-app.listen(5000, () => {
-    console.log("Server running on port 5000");
+app.use((req, res) => {
+    res.status(404).json({ message: 'Route not found' });
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
 });
