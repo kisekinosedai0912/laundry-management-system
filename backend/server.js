@@ -13,6 +13,19 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.status(200).json({ 
+        status: 'OK', 
+        message: 'LaundryPro API is running',
+        endpoints: {
+            health: '/health',
+            auth: '/api/auth',
+            bookings: '/api/bookings',
+            customerRecords: '/api/customer/record/:userId'
+        }
+    });
+});
+
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', message: 'Server is running' });
 });

@@ -13,7 +13,7 @@ export default function CustomerPage({ user, setUser }) {
                 console.log("Current user object:", user);
                 console.log("User ID being used:", user.id);
 
-                const response = await fetch(`http://localhost:5000/api/customer/record/${user.id}`);
+                const response = await fetch(`https://laundry-management-system-32ft.onrender.com/api/customer/record/${user.id}`);
                 const data = await response.json();
                 
                 // Debug: Log the response
